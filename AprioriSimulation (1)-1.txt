@@ -1,0 +1,193 @@
+Apriori Algorithm
+Source : Data Mining Concepts and Techniques By Jiawei Han and Michelline Kamber 
+
+Basic Concepts
+Ck - k-itemset candidates
+Lk - frequent k-iemset, that is candidates with sup. count >=minimum support count
+
+Data Set D 
+Transaction						Item
+1							I1,I2,I5
+2							I2,I4
+3							I2,I3
+4							I1,I2,I4
+5							I1,I3
+6							I2,I3
+7							I1,I3
+8							I1,I2,I3,I5
+9							I1,I2,I3
+
+Minimum Support Count = 2
+
+STEPS
+Step1. Scan all the transactions to count the number of occurences of each item c
+C1
+Itemset							   Sup. Count
+{I1}								6
+{I2}								7
+{I3}								6
+{I4}								2
+{I5}								2
+
+Step2.  Determine L1 - set of frequent 1-itemset
+L1 = C1 (Result of C1 satisfied the support count)
+
+L1
+Itemset						    Sup.Count
+{I1}							6
+{I2}							7
+{I3}							6
+{I4}							2
+{I5}							2
+
+Step3. Generate C2 - 2-itemset candidates and scan D for support count
+C2
+Itemset						    Sup.Count
+{I1,I2}							4
+{11,I3}							4
+{I1,I4}							1
+{11,I5}							2
+{12,I3}							4
+{I2,I4}							2
+{12,I5}							2
+{I3,I4}							0
+{I3,I5}							1
+{14,I5}							0
+
+Step 4. Determine L2 - set of frequent 2-itemset (Minimum Support = 2)
+Remove - Not satisfying the support count
+{I1,I4}					1
+{I3,I4}					0
+{I3,I5}					1
+{14,I5}					0
+
+L2 Result 
+{I1,I2}					4
+{11,I3}					4
+{11,I5}					2
+{12,I3}					4
+{I2,I4}					2
+{12,I5}					2
+
+Step 5. Generate C3 - 3-itemset candidates
+- Prune 
+C3
+{I1,I2}				= {I1,I2,I3}
+{11,I3}
+
+{I1,I2}				= {I1,I2,I5}
+{11,I3}				= {I1,I3,I5}
+{11,I5}	
+
+{12,I3}				= {I2,I3,I4}
+{I2,I4}					
+
+{12,I3}				= {I2,I3,I5}
+{I2,I4}				= {I2,I4,I5}
+{12,I5}	
+
+C3 Result
+{I1,I2,I3}
+{I1,I2,I5}
+{I1,I3,I5}
+{I2,I3,I4}
+{I2,I3,I5}
+{I2,I4,I5}
+
+Prune - property of Apriori 
+         - all subsets of a frequent itemset must also be frequent
+
+L2 Result
+{I1,I2}					4
+{11,I3}					4
+{11,I5}					2
+{12,I3}					4
+{I2,I4}					2
+{12,I5}					2
+
+C3 Result			Subsets (Check from L2 if it exists)
+{I1,I2,I3}				= {I1,I2} , {I1,I3} , {I2,I3}    
+{I1,I2,I5}				= {I1,I2},  {I1,I5},  {12,I5}
+{I1,I3,I5}				= {I1,I3}, {I1,I5} , {I3,I5}   
+						- Not a candidate because {13,I5} is not in the list
+{I2,I3,I4}				= {I2,I3}, {I3,I4}, {I2,I4}   - Not a candidate
+{I2,I3,I5}				= {I2,I3}, {I2,I5}, {I3,I5}   - Not a candidate
+{I2,I4,I5}				= {I2,I4}, {I2,I5}, {I4,I5}   - Not a candidate
+
+C3 Result By Pruning
+{I1,I2,I3}				   
+{I1,I2,I5}	
+
+Step 6. Find the support count of C3
+
+C3 Result By Pruning     Support Count
+{I1,I2,I3}			2- Based from T8= I1,I2,I3,I5 and T9 = I1,I2,I3
+{I1,I2,I5}			2- Based from T1 = I1,I2,I5 and T8 =  I1,I2,I3,I5
+
+- Refer from Data set D
+Data Set D 
+Transaction		Item
+1					I1,I2,I5
+2					I2,I4
+3					I2,I3
+4					I1,I2,I4
+5					I1,I3
+6					I2,I3
+7					I1,I3
+8					I1,I2,I3,I5
+9					I1,I2,I3
+
+Step 7.  Determine L3 - the set of frequent 3-itemset
+C3 Result By Pruning     Support Count
+{I1,I2,I3}		2	- Based from T8	= I1,I2,I3,I5 and T9 = I1,I2,I3
+{I1,I2,I5}		2	- Based from T1 = I1,I2,I5 and T8 =  I1,I2,I3,I5
+
+- The result of Step6 satisfied the requirement of Step 7.
+- Keep result of Step6
+
+L3 Result 
+Result By Pruning     Support Count
+{I1,I2,I3}								2	     
+{I1,I2,I5}								2
+
+Step 8. Determine C4 - 4-itemset candidates
+C3 Result By Pruning     Support Count
+{I1,I2,I3}								2	     
+{I1,I2,I5}								2
+
+- Refer to result of L3 
+L3 Result 
+{I1,I2,I3}								2	     
+{I1,I2,I5}								2
+
+C4
+Itemset 				Support Count
+{I1,I2,I3,I5}				={I1,I2,I3}   - Retain based from L3
+														={I1,I2,I5}   - Retain based from L3
+														={I2,I3,I5}   - Prune (Not in L3)
+-Prune	
+={I2,I3,I5}   - Prune (Not in L3)
+
+C4 = null because the support count is 2.
+THE ALGORITHM STOPS
+
+L3 Result 
+{I1,I2,I3}								2	     
+{I1,I2,I5}								2
+
+item2=I2 item3=I3 2 ==> item1=I1 2    <conf:(1)> lift:(1.5) lev:(0.07) [0] conv:(0.67)
+ 5. item1=I1 item3=I3 2 ==> item2=I2 2    <conf:(1)> lift:(2.25) lev:(0.12) [1] conv:(1.11)
+ 6. item3=I3 2 ==> item1=I1 item2=I2 2    <conf:(1)> lift:(2.25) lev:(0.12) [1] conv:(1.11)
+
+Suggested Researh : Pairing for Capstone
+
+
+
+
+
+
+				
+
+
+
+
